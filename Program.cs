@@ -3,6 +3,8 @@ Original source : https://github.com/opentk/opentk-examples/blob/2dda981e0c95f02
 MIT LICENSE ( https://github.com/opentk/opentk-examples/blob/2dda981e0c95f02d4030c3cdff5c6aaf903d8292/LICENSE )
 */
 
+// knowledge refs : https://learnopengl.com/Getting-started/Shaders
+
 using System;
 using OpenToolkit.Graphics.OpenGL;
 using OpenToolkit.Windowing.Common;
@@ -24,15 +26,16 @@ namespace BasicTriangle
             }
         ";
 
-        // A simple fragment shader. Just a constant red color.
         const string FragmentShaderSource = @"
             #version 330
 
             out vec4 outputColor;
 
+            uniform vec4 inColor;
+
             void main(void)
             {
-                outputColor = vec4(1.0, 0.0, 0.0, 1.0);
+                outputColor = inColor;
             }
         ";
 
@@ -126,8 +129,12 @@ namespace BasicTriangle
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
             // Bind the VAO
             GL.BindVertexArray(VertexArrayObject);
+            // retrieve color location variable of the shader program
+            var colorLocation = GL.GetUniformLocation(ShaderProgram, "inColor");
             // Use/Bind the program
             GL.UseProgram(ShaderProgram);
+            // set color to white
+            GL.Uniform4(colorLocation, 1f, 1f, 1f, 1f);
             // This draws the triangle.
             GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
 
